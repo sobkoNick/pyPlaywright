@@ -1,0 +1,9 @@
+{
+  "data": {
+    "type": "suite",
+    "attributes": {
+      "title": "Default suite",
+      "description": "Default suite description"
+    }
+  }
+}

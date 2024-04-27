@@ -1,0 +1,9 @@
+{
+  "api_token_to_get_jwt": "testomat_r8ra_XopTEUR9ZRANnnOOvF-LIEcBfmzrQ1704819334",
+  "project_id": "project1-b19b4",
+  "project_name": "project1",
+  "base_url": "https://app.testomat.io",
+  "login_url": "/users/sign_in",
+  "user_credentials": {
+  }
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "endpoint": "login",
+    "urls": {
+      "post": "/api/login"
+    }
+  },
+  {
+    "endpoint": "suites",
+    "urls": {
+      "get": "/api/{}/suites",
+      "get_by_id": "/api/{}/suites/{}",
+      "post": "/api/{}/suites",
+      "put": "/api/{}/suites/{}",
+      "delete": "/api/{}/suites/{}"
+    }
+  },
+  {
+    "endpoint": "tests",
+    "urls": {
+      "get": "/api/{}/tests",
+      "get_by_id": "/api/{}/tests/{}",
+      "post": "/api/{}/tests",
+      "put": "/api/{}/tests/{}",
+      "delete": "/api/{}/tests/{}"
+    }
+  }
+]

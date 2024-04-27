@@ -1,0 +1,11 @@
+{
+  "data": {
+    "type": "tests",
+    "attributes": {
+      "title": "test added by automation",
+      "description": "### Requirements\n1. Req1\n2. Req2\n### Steps\n1. Step1\n2. Step2",
+      "suite_id": "",
+      "priority": 0
+    }
+  }
+}
