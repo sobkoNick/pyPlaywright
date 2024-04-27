@@ -18,7 +18,7 @@ def perform_login(app):
     """
     Test precondition to perform login
     """
-    LoginPage().login(app.test_data.login_url, app.test_data.user_credentials)
+    LoginPage(app.page).login(app.test_data.login_url, app.test_data.user_credentials)
 
 
 suites = ['selene_autotest_suite_1', 'selene_autotest_suite_2']
@@ -73,8 +73,8 @@ def test_suite_creation(app, suite_name):
     """
     Test creates a new suite, opens it and verifies the name in a title field
     """
-    HomePage().open_project(app.test_data.project_name)
-    ProjectPage() \
+    HomePage(app.page).open_project(app.test_data.project_name)
+    ProjectPage(app.page) \
         .set_suite_name(suite_name) \
         .click_to_add_suite() \
         .choose_suite(suite_name) \
@@ -85,7 +85,7 @@ def test_suite_is_present_on_ui(app, existing_suite):
     """
     Test opens existing suite (created using API) and verifies the name in a title field
     """
-    HomePage().open_project(app.test_data.project_name)
-    ProjectPage() \
+    HomePage(app.page).open_project(app.test_data.project_name)
+    ProjectPage(app.page) \
         .choose_suite(existing_suite) \
         .verify_opened_suite_title(existing_suite)

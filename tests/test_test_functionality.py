@@ -1,7 +1,6 @@
 import json
 import re
 
-import pytest
 from _pytest.fixtures import fixture
 
 from api_steps.api_client import ApiClient
@@ -20,7 +19,7 @@ def perform_login(app):
     """
     Test precondition to perform login
     """
-    LoginPage().login(app.test_data.login_url, app.test_data.user_credentials)
+    LoginPage(app.page).login(app.test_data.login_url, app.test_data.user_credentials)
 
 
 @fixture
@@ -82,28 +81,12 @@ def existing_test(app):
 
 #   ---TESTS---
 
-@pytest.mark.skip(reason="No way to save test requirements and test steps")
-def test_adding_test_case_to_suite(app, existing_suite_for_test):
-    """
-    Test adds a new test to existing suite and verifies data was saved correctly
-    """
-    HomePage().open_project(app.test_data.project_name)
-    ProjectPage() \
-        .choose_suite(existing_suite_for_test) \
-        .choose_file_suite_type() \
-        .click_to_add_new_test() \
-        .set_test_name("created by autotest") \
-        .set_test_requirements("req1") \
-        .set_test_steps("step1") \
-        .save_test()
-
-
 def test_opening_existing_test(app, existing_test):
     """
     Test opening existing test and verifying fields
     """
-    HomePage().open_project(app.test_data.project_name)
-    ProjectPage() \
+    HomePage(app.page).open_project(app.test_data.project_name)
+    ProjectPage(app.page) \
         .choose_suite(existing_test[0]) \
         .choose_file_suite_type() \
         .select_test(existing_test[1]) \

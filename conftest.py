@@ -11,6 +11,8 @@ from api_steps.login_api_client import LoginApiClient
 from constants import endpoint_names
 from fixture.application import Application
 from models.common_test_data import CommonTestData
+from pages.home_page import HomePage
+from pages.project_page import ProjectPage
 from utils.logger import CustomLogger
 
 
@@ -45,14 +47,14 @@ def app(request):
 #     page.close()
 
 
-# @pytest.fixture(autouse=True)
-# def logout_after_test(app):
-#     yield
-#     project_page = ProjectPage()
-#     if project_page.is_account_btn_visible():
-#         project_page.click_on_account_btn()
-#     HomePage().click_on_user_menu().click_to_sign_out()
-#     page.context.clear_cookies()
+@pytest.fixture(autouse=True)
+def logout_after_test(app):
+    yield
+    project_page = ProjectPage(app.page)
+    if project_page.is_account_btn_visible():
+        project_page.click_on_account_btn()
+    HomePage(app.page).click_on_user_menu().click_to_sign_out()
+    app.page.context.clear_cookies()
 
 
 # @pytest.hookimpl(tryfirst=True, hookwrapper=True)
