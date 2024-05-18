@@ -40,13 +40,6 @@ def app(request):
         browser.close()
 
 
-# @pytest.fixture
-# def page(app):
-#     page = app.browser.new_page()
-#     yield page
-#     page.close()
-
-
 @pytest.fixture(autouse=True)
 def logout_after_test(app):
     yield
@@ -57,32 +50,18 @@ def logout_after_test(app):
     app.page.context.clear_cookies()
 
 
-# @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-# def pytest_runtest_makereport(item, call):
-#     """
-#     Attaches a screenshot on Report Portal on test failure
-#     """
-#     outcome = yield
-#     rep = outcome.get_result()
-#     if rep.when == 'call' and rep.failed:
-#         fixture.logger.error(f"{rep.head_line} {rep.outcome}",
-#                              attachment={"name": f"{rep.head_line}.png",
-#                                          "data": browser.config.driver.get_screenshot_as_png(),
-#                                          "mime": "image/png"})
-
-
-# @step("Set up browser")
-# def set_up_browser(test_data, playwright: Playwright):
-#     chrome = playwright.chromium
-#     browser = chrome.launch()
-#
-#
-#     browser.config.base_url = test_data.base_url
-#
-#     options = webdriver.ChromeOptions()
-#     options.add_argument("--start-maximized")
-#     # options.add_experimental_option("detach", True)
-#     browser.config.driver = webdriver.Chrome(options=options)
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    Attaches a screenshot on Report Portal on test failure
+    """
+    outcome = yield
+    rep = outcome.get_result()
+    if rep.when == 'call' and rep.failed:
+        fixture.logger.error(f"{rep.head_line} {rep.outcome}",
+                             attachment={"name": f"{rep.head_line}.png",
+                                         "data": fixture.page.screenshot(full_page=True),
+                                         "mime": "image/png"})
 
 
 @step("Loads test data from file and gets jwt token")

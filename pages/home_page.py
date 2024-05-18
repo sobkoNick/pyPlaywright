@@ -7,7 +7,7 @@ class HomePage:
         self.page = page
         self.signed_in_alert = page.locator('[class="common-flash-info"]')
         self.user_menu_btn = page.locator('[id="user-menu-button"]')
-        self.sign_out_btn = page.locator('input[value="Sign Out"]')
+        self.sign_out_btn = page.locator('[action="/users/sign_out"] button')
 
     @step
     def signed_in_alert_has_text(self, expected_text):
