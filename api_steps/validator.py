@@ -1,24 +1,22 @@
-import json
-
 from assertpy import assert_that
+from playwright.sync_api import APIResponse
 from reportportal_client import step
-from requests import Response
 
 
 class Validator:
-    def __init__(self, response: Response):
+    def __init__(self, response: APIResponse):
         self.response = response
 
     @step
     def status_code_is_ok(self):
-        actual_status_code = self.response.status_code
+        actual_status_code = self.response.status
         assert_that(actual_status_code, f"Actual status code {actual_status_code} is not 200 OK") \
             .is_equal_to(200)
         return self
 
     @step
     def status_code_is(self, status_code):
-        actual_status_code = self.response.status_code
+        actual_status_code = self.response.status
         assert_that(actual_status_code,
                     f"Actual status code {actual_status_code} differs from expected {status_code}") \
             .is_equal_to(status_code)
@@ -35,4 +33,3 @@ class Validator:
         for obj in self.get_response_body()['data']:
             actual_objs.append(clazz(**obj))
         return actual_objs
-

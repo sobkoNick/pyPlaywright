@@ -30,13 +30,19 @@ def app(request):
 
     fixture.env = request.config.getoption("--env")
     settings.ENV = copy(fixture.env)
-    fixture.test_data = load_test_data(fixture.logger)
 
     with sync_playwright() as p:
+        # API context creation
+        fixture.request_context = p.request.new_context()
+        fixture.test_data = load_test_data(fixture.request_context, fixture.logger)
+        # browser creation
         browser = p.chromium.launch(headless=False)
         fixture.browser = browser
         fixture.page = fixture.browser.new_page()
+
         yield fixture
+
+        fixture.request_context.dispose()
         browser.close()
 
 
@@ -65,21 +71,21 @@ def pytest_runtest_makereport(item, call):
 
 
 @step("Loads test data from file and gets jwt token")
-def load_test_data(logger) -> CommonTestData:
+def load_test_data(request_context, logger) -> CommonTestData:
     file_path = os.path.join(settings.PROJECT_ROOT, "config/{}_config.json".format(settings.ENV))
     with open(file_path, 'r') as json_data:
         test_data_as_json = json.loads(json_data.read())
-        jwt_token = request_and_verify_jwt(logger, test_data_as_json["api_token_to_get_jwt"])
+        jwt_token = request_and_verify_jwt(request_context, logger, test_data_as_json["api_token_to_get_jwt"])
         test_data_as_json["jwt_token"] = jwt_token
         del test_data_as_json["api_token_to_get_jwt"]
         return CommonTestData(**test_data_as_json)
 
 
 @step("Sends request from fixture to get jwt token")
-def request_and_verify_jwt(logger, api_token_to_get_jwt):
-    jwt_response = LoginApiClient(endpoint_names.LOGIN_ENDPOINT, logger, api_token_to_get_jwt).get_jwt()
-    code = jwt_response.status_code
-    jwt_token = jwt_response.json()["jwt"]
-    if code != 200 or not jwt_token.strip():
-        pytest.skip(f"Unable to get JWT token. Status code - {code}, token - {jwt_token}")
+def request_and_verify_jwt(request_context, logger, api_token_to_get_jwt):
+    response_json, response_code = LoginApiClient(request_context, endpoint_names.LOGIN_ENDPOINT, logger,
+                                                  api_token_to_get_jwt).get_jwt()
+    jwt_token = response_json["jwt"]
+    if response_code != 200 or not jwt_token.strip():
+        pytest.skip(f"Unable to get JWT token. Status code - {response_code}, token - {jwt_token}")
     return jwt_token

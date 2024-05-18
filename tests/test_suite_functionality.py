@@ -32,7 +32,8 @@ def suite_name(app, request):
     yield name
 
     app.logger.info('Deleting the created suite using API')
-    all_suites = ApiClient(token=app.test_data.jwt_token, endpoint=SUITES_ENDPOINT, logger=app.logger) \
+    all_suites = ApiClient(request_context=app.request_context, token=app.test_data.jwt_token,
+                           endpoint=SUITES_ENDPOINT, logger=app.logger) \
         .get([app.test_data.project_id]) \
         .validate_that() \
         .status_code_is_ok() \
@@ -43,7 +44,8 @@ def suite_name(app, request):
         .find_first()
 
     if found_suite.is_present():
-        ApiClient(token=app.test_data.jwt_token, endpoint=SUITES_ENDPOINT, logger=app.logger) \
+        ApiClient(request_context=app.request_context, token=app.test_data.jwt_token,
+                  endpoint=SUITES_ENDPOINT, logger=app.logger) \
             .delete([app.test_data.project_id, found_suite.get().id]) \
             .validate_that().status_code_is_ok()
 
@@ -54,7 +56,8 @@ def existing_suite(app):
         suite_data_to_post = json.load(json_data)
 
     # creates default suite for tests
-    created_suite = ApiClient(token=app.test_data.jwt_token, endpoint=SUITES_ENDPOINT, logger=app.logger) \
+    created_suite = ApiClient(request_context=app.request_context, token=app.test_data.jwt_token,
+                              endpoint=SUITES_ENDPOINT, logger=app.logger) \
         .post(url_params=[app.test_data.project_id], new_obj=suite_data_to_post) \
         .validate_that().status_code_is_ok().get_response_as(Suite)
 
@@ -62,7 +65,8 @@ def existing_suite(app):
     yield created_suite.attributes.title
 
     app.logger.info("Deleting existing suite after test run")
-    ApiClient(token=app.test_data.jwt_token, endpoint=SUITES_ENDPOINT, logger=app.logger) \
+    ApiClient(request_context=app.request_context, token=app.test_data.jwt_token,
+              endpoint=SUITES_ENDPOINT, logger=app.logger) \
         .delete(url_params=[app.test_data.project_id, created_suite.id]) \
         .validate_that().status_code_is_ok()
 
