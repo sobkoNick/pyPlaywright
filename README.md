@@ -1,7 +1,7 @@
 # pyPlaywright
 A simple project for UI and API automation with Playwright used.
 
-#Libs:
+# Libs:
 
 pytest==7.4.4
 pytest-reportportal==5.3.1
